@@ -3,6 +3,7 @@ import { World } from './entities/World'
 import WebGL from 'three/addons/capabilities/WebGL.js'
 import { DEFAULT_TERRAIN_SIZE } from './helpers/constants';
 import { Player } from './entities/Player';
+import { Monsoon } from './entities/Monsoon';
 
 if (WebGL.isWebGL2Available()) {
   // Initiate function or other initializations here
@@ -19,6 +20,16 @@ if (WebGL.isWebGL2Available()) {
     const player = new Player(assets.models.player_1, playerCell, 4)
     player.addAction(player.clickOnTerrain, world.raycaster, terrain)
     world.add(player)
+
+    const monsoonsCount = 10
+    const monsoonsCells = terrain.getRandomCells(monsoonsCount)
+    
+    for (let i = 0; i < monsoonsCount; i++) {
+      const monsoonCell = monsoonsCells[i]
+
+      const monsoon = new Monsoon(assets.models.pikachu, monsoonCell, 1.5)
+      world.add(monsoon)
+    }
   })()
 } else {
   const warning = WebGL.getWebGL2ErrorMessage()
