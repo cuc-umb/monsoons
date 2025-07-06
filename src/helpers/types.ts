@@ -1,4 +1,4 @@
-import { Texture } from "three"
+import { Texture, Vector3 } from "three"
 import type { GLTF } from "three/examples/jsm/Addons.js"
 
 export type TTerrainLevel =
@@ -20,3 +20,7 @@ export type TAssets = {
   },
   models: TCreatureGLTF
 }
+
+export type TDecorationType = 'tree' | 'stone'
+
+export type TDecoration = { type: TDecorationType; position: Vector3; scale?: Vector3 }
