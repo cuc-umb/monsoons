@@ -8,8 +8,8 @@ import { Border } from "./Border"
 import { Cloud } from "./Cloud"
 import { getTerrainLevelByHeight } from "../helpers/utils"
 import { Tree } from "./Tree"
-import { CellDebugger } from "./CellDebugger"
-import { InstancedMeshManager } from "./InstancedMeshManager"
+import { CellDebugger } from "../managers/DebugManager"
+import { InstancedMeshManager } from "../managers/InstancedMeshManager"
 import { Stone } from "./Stone"
 
 export class Terrain extends Group {

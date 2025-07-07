@@ -1,6 +1,6 @@
 import { PMREMGenerator, Texture, TextureLoader, WebGLRenderer, FloatType } from "three";
 import { GLTF, GLTFLoader, RGBELoader } from "three/examples/jsm/Addons.js";
-import { AssetsLoader } from "./AssetsLoader";
+import { AssetsLoader } from "../managers/AssetsManager";
 import { TERRAIN_LEVELS_TEXTURES } from "../helpers/constants";
 import { TAssets } from "../helpers/types";
 
@@ -20,9 +20,6 @@ export class AssetsService {
     pmrem.compileEquirectangularShader();
 
     // Load rgbe textures
-    // Use FloatType for RGBELoader as in original code
-    // Import FloatType from three if not already
-    // @ts-ignore
     const rgbeLoader = new AssetsLoader(new RGBELoader().setDataType(FloatType));
     const rgbeTextures = {
       envmap: '/src/assets/textures/envmap.hdr'

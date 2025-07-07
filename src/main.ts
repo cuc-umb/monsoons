@@ -27,7 +27,7 @@ if (WebGL.isWebGL2Available()) {
     for (let i = 0; i < monsoonsCount; i++) {
       const monsoonCell = monsoonsCells[i]
 
-      const monsoon = new Monsoon(assets.models.pikachu, monsoonCell, 1.5)
+      const monsoon = new Monsoon(assets.models.ms_1, monsoonCell, 1.5)
       world.add(monsoon)
     }
   })()

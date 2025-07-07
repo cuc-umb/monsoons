@@ -1,5 +1,5 @@
 import { CSS2DObject } from 'three/examples/jsm/Addons.js';
-import { TerrainCell } from './TerrainCell';
+import { TerrainCell } from '../entities/TerrainCell';
 import { InstancedMesh } from 'three';
 
 export class CellDebugger {

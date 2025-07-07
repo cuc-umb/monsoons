@@ -1,4 +1,3 @@
-import { InputManager } from "./InputManager"
 import {
   ACESFilmicToneMapping,
   Color,
@@ -10,15 +9,16 @@ import {
   WebGLRenderer
 } from "three"
 import { CSS2DRenderer } from "three/examples/jsm/Addons.js"
-import { AssetsService } from "./AssetsService"
+import { AssetsService } from "../services/AssetsService"
 import { TAssets } from "../helpers/types"
 // import GUI from "three/examples/jsm/libs/lil-gui.module.min.js"
 import { resizeRendererToDisplaySize } from "../helpers/utils"
 
-import { LightingManager } from "./LightingManager"
-import { LightingGUIController } from "./LightingGUIController"
-import { LabelRendererManager } from "./LabelRendererManager"
-import { OrbitControlsManager } from "./OrbitControlsManager"
+import { LightingManager } from "../managers/LightingManager"
+import { LightingGUIController } from "../managers/LightingGUIController"
+import { LabelRendererManager } from "../managers/LabelRendererManager"
+import { OrbitControlsManager } from "../managers/OrbitControlsManager"
+import { InputManager } from "../managers/InputManager"
 
 
 export class World extends Scene {
