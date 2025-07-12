@@ -4,7 +4,6 @@ import { CELL_MAX_HEIGHT, CELL_RADIUS, MAX_CLOUDS_COUNT, TERRAIN_LEVELS, TERRAIN
 import { SimplexNoise } from "three/examples/jsm/Addons.js"
 import { TAssets, TDecoration, TDecorationType, TTerrainLevel } from "../helpers/types"
 import { Water } from "./Water"
-import { Border } from "./Border"
 import { Cloud } from "./Cloud"
 import { getTerrainLevelByHeight } from "../helpers/utils"
 import { Tree } from "./Tree"
@@ -26,9 +25,9 @@ export class Terrain extends Group {
 
     this.assets = assets
     const { terrain, envmap } = assets.textures
-    const { water: waterTexture, dirt: dirtTexture } = terrain
+    const { water: waterTexture } = terrain
 
-    this.initerrainMeshes(size)
+    this.initTerrainMeshes(size)
     this.initDecorationMeshes()
 
     this.generateTerrainCells(size)
@@ -36,11 +35,9 @@ export class Terrain extends Group {
 
     const seaMesh = new Water(waterTexture, envmap, TERRAIN_LEVELS.sand, 17)
     this.add(seaMesh)
-    const mapContainerMesh = new Border(dirtTexture, envmap, CELL_MAX_HEIGHT + 0.1, 17.1)
-    this.add(mapContainerMesh)
   }
 
-  private initerrainMeshes(size: number) {
+  private initTerrainMeshes(size: number) {
     Object.keys(TERRAIN_LEVELS).forEach((levelKey) => {
       const level = levelKey as TTerrainLevel;
       const geometry = new CylinderGeometry(CELL_RADIUS, CELL_RADIUS, 1, 6);
