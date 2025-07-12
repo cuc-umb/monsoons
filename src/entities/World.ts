@@ -1,46 +1,36 @@
 import {
-  ACESFilmicToneMapping,
   Color,
-  PCFSoftShadowMap,
   PerspectiveCamera,
   Raycaster,
   Scene,
-  Vector2,
-  WebGLRenderer
 } from "three"
-import { CSS2DRenderer } from "three/examples/jsm/Addons.js"
+import { CSS2DRenderer, OrbitControls } from "three/examples/jsm/Addons.js"
 import { AssetsService } from "../services/AssetsService"
 import { TAssets } from "../helpers/types"
-// import GUI from "three/examples/jsm/libs/lil-gui.module.min.js"
-import { resizeRendererToDisplaySize } from "../helpers/utils"
 
 import { LightingManager } from "../managers/LightingManager"
 import { LightingGUIController } from "../managers/LightingGUIController"
 import { LabelRendererManager } from "../managers/LabelRendererManager"
-import { OrbitControlsManager } from "../managers/OrbitControlsManager"
 import { InputManager } from "../managers/InputManager"
+import { RendererManager } from "../managers/RendererManager"
 
 
 export class World extends Scene {
-  private renderer: WebGLRenderer
   private labelRenderer: CSS2DRenderer
-  private camera: PerspectiveCamera
-  private boundAnimate: () => void
-  private animateFunctions: ((...args: unknown[]) => unknown)[] = []
-  private currentPointerPosition: Vector2
-  public raycaster: Raycaster
+  public camera: PerspectiveCamera
   private assetsService: AssetsService
+  private lightingManager: LightingManager 
+  private inputManager: InputManager 
+  private labelRendererManager: LabelRendererManager 
+  private rendererManager: RendererManager 
 
   constructor() {
     super()
     this.background = new Color('#FFEECC')
 
-    const canvas = document.getElementById('main-c') ?? undefined
-    this.renderer = new WebGLRenderer({ antialias: true, canvas })
-    this.renderer.toneMapping = ACESFilmicToneMapping
-    this.renderer.shadowMap.enabled = true
-    this.renderer.shadowMap.type = PCFSoftShadowMap
-    this.boundAnimate = this.animate.bind(this)
+    // Label Renderer setup
+    this.labelRendererManager = new LabelRendererManager();
+    this.labelRenderer = this.labelRendererManager.labelRenderer;
 
     // Camera
     const fov = 45
@@ -50,54 +40,34 @@ export class World extends Scene {
     this.camera = new PerspectiveCamera(fov, aspect, near, far)
     this.camera.position.set(-17, 31, 33)
 
+    const orbitControls = new OrbitControls(this.camera, this.labelRenderer.domElement);
+    orbitControls.target.set(0, 5, 0);
+    orbitControls.update();
 
     // Lighting setup
-    const lightingManager = new LightingManager(this);
-    new LightingGUIController(lightingManager.sunlight, lightingManager.sunlightHelper);
+    this.lightingManager = new LightingManager(this);
+    new LightingGUIController(this.lightingManager.sunlight, this.lightingManager.sunlightHelper);
 
     // Input Manager setup
-    const inputManager = new InputManager();
-    this.currentPointerPosition = inputManager.currentPointerPosition;
+    this.inputManager = new InputManager();
 
-    this.raycaster = new Raycaster();
-    this.addAnimateAction(this.setRaycasterPosition);
+    // Renderer setup
+    this.rendererManager = new RendererManager(this)
+    const setRaycasterPositionWithCamera = this.inputManager.setRaycasterPosition.bind(
+      this.inputManager,
+      this.camera
+    )
+    this.rendererManager.addAnimateAction(setRaycasterPositionWithCamera);
 
+    this.assetsService = new AssetsService(this.rendererManager.renderer);
 
-    // Label Renderer setup
-    const labelRendererManager = new LabelRendererManager();
-    this.labelRenderer = labelRendererManager.labelRenderer;
-
-
-    // Orbit Controls setup
-    new OrbitControlsManager(this.camera, this.labelRenderer.domElement);
-
-    this.assetsService = new AssetsService(this.renderer);
-    this.animate()
+    this.rendererManager.animate()
   }
-  private animate() {
-    if (resizeRendererToDisplaySize(this.renderer)) {
-      const canvas = this.renderer.domElement
-      this.camera.aspect = canvas.clientWidth / canvas.clientHeight
-      this.camera.updateProjectionMatrix()
-    }
-    this.animateFunctions.forEach(fn => { fn.call(this) })
-    this.renderer.render(this, this.camera)
-    // this.labelRenderer.render(this, this.camera)
-    requestAnimationFrame(this.boundAnimate)
+
+  public getRaycaster (): Raycaster {
+    return this.inputManager.raycaster
   }
-  public addAnimateAction(fn: (...args: unknown[]) => unknown) {
-    this.animateFunctions.push(fn)
-  }
-  public removeAnimateAction(fn: (...args: unknown[]) => unknown) {
-    const fnIdx = this.animateFunctions.indexOf(fn)
-    if (fnIdx !== -1) {
-      this.animateFunctions.splice(fnIdx, 1)
-    }
-  }
-  // registerEvents now handled by InputManager
-  private setRaycasterPosition () {    
-    this.raycaster.setFromCamera(this.currentPointerPosition, this.camera);
-  }
+  
   public async loadAssets(): Promise<TAssets> {
     try {
       return await this.assetsService.loadAssets();

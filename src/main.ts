@@ -18,7 +18,7 @@ if (WebGL.isWebGL2Available()) {
 
     const playerCell = terrain.getRandomCell()
     const player = new Player(assets.models.player_1, playerCell, 4)
-    player.addAction(player.clickOnTerrain, world.raycaster, terrain)
+    player.addAction(player.clickOnTerrain, world.getRaycaster(), terrain)
     world.add(player)
 
     const monsoonsCount = 10
