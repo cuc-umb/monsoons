@@ -4,7 +4,7 @@ import {
   Raycaster,
   Scene,
 } from "three"
-import { CSS2DRenderer, OrbitControls } from "three/examples/jsm/Addons.js"
+import { CSS2DRenderer } from "three/examples/jsm/Addons.js"
 import { AssetsService } from "../services/AssetsService"
 import { TAssets } from "../helpers/types"
 
@@ -13,7 +13,9 @@ import { LightingGUIController } from "../controllers/LightingGUIController"
 import { LabelRendererManager } from "../managers/LabelRendererManager"
 import { InputManager } from "../managers/InputManager"
 import { RendererManager } from "../managers/RendererManager"
+import { INITIAL_WORLD_CAMERA_ANGLE, INITIAL_WORLD_CAMERA_POSITION, WORLD_SIZE_UNIT_PX } from "../helpers/constants"
 import GUI from "three/examples/jsm/libs/lil-gui.module.min.js"
+import { CameraGUIController } from "../controllers/CameraGUIController"
 
 
 export class World extends Scene {
@@ -35,17 +37,15 @@ export class World extends Scene {
     this.labelRendererManager = new LabelRendererManager();
     this.labelRenderer = this.labelRendererManager.labelRenderer;
 
-    // Camera
+    // Camera setup
     const fov = 45
     const aspect = 2 // the canvas default
     const near = 0.1
-    const far = 100
+    const far = 200
     this.camera = new PerspectiveCamera(fov, aspect, near, far)
-    this.camera.position.set(-17, 31, 33)
-
-    const orbitControls = new OrbitControls(this.camera, this.labelRenderer.domElement);
-    orbitControls.target.set(0, 5, 0);
-    orbitControls.update();
+    this.camera.position.set(...Object.values(INITIAL_WORLD_CAMERA_POSITION) as [number, number, number])
+    this.camera.rotation.set(...Object.values(INITIAL_WORLD_CAMERA_ANGLE) as [number, number, number])
+    new CameraGUIController(gui, this.camera, this.labelRenderer.domElement)
 
     // Lighting setup
     this.lightingManager = new LightingManager(this);
