@@ -9,7 +9,7 @@ import { AssetsService } from "../services/AssetsService"
 import { TAssets } from "../helpers/types"
 
 import { LightingManager } from "../managers/LightingManager"
-import { LightingGUIController } from "../managers/LightingGUIController"
+import { LightingGUIController } from "../controllers/LightingGUIController"
 import { LabelRendererManager } from "../managers/LabelRendererManager"
 import { InputManager } from "../managers/InputManager"
 import { RendererManager } from "../managers/RendererManager"
