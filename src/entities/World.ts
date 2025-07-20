@@ -13,6 +13,7 @@ import { LightingGUIController } from "../controllers/LightingGUIController"
 import { LabelRendererManager } from "../managers/LabelRendererManager"
 import { InputManager } from "../managers/InputManager"
 import { RendererManager } from "../managers/RendererManager"
+import GUI from "three/examples/jsm/libs/lil-gui.module.min.js"
 
 
 export class World extends Scene {
@@ -26,6 +27,8 @@ export class World extends Scene {
 
   constructor() {
     super()
+    const gui = new GUI()
+
     this.background = new Color('#FFEECC')
 
     // Label Renderer setup
@@ -46,7 +49,7 @@ export class World extends Scene {
 
     // Lighting setup
     this.lightingManager = new LightingManager(this);
-    new LightingGUIController(this.lightingManager.sunlight, this.lightingManager.sunlightHelper);
+    new LightingGUIController(gui, this.lightingManager.sunlight, this.lightingManager.sunlightHelper);
 
     // Input Manager setup
     this.inputManager = new InputManager();
