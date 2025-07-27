@@ -1,9 +1,8 @@
-import { SphereGeometry, Mesh, MeshStandardMaterial, BufferGeometry } from "three"
+import { SphereGeometry, Mesh, BufferGeometry, MeshLambertMaterial } from "three"
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js"
-import { TAssets } from "../helpers/types"
 
 export class Cloud extends Mesh {
-    constructor(envmap: TAssets['textures']['envmap']) {
+    constructor() {
         let geo = new SphereGeometry(0, 0, 0) as BufferGeometry
 
         const puff1 = new SphereGeometry(1.2, 7, 7)
@@ -24,9 +23,7 @@ export class Cloud extends Mesh {
 
         geo = mergeGeometries([geo, cloudGeo])
 
-        const material = new MeshStandardMaterial({
-            envMap: envmap,
-            envMapIntensity: 0.75,
+        const material = new MeshLambertMaterial({
             flatShading: true,
         })
 

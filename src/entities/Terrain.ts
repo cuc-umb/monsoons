@@ -1,4 +1,4 @@
-import { CylinderGeometry, Euler, Group, InstancedMesh, Intersection, MeshPhysicalMaterial, Vector2, Vector3 } from "three"
+import { CylinderGeometry, Euler, Group, InstancedMesh, Intersection, MeshLambertMaterial, Vector2, Vector3 } from "three"
 import { TerrainCell } from "./TerrainCell"
 import { CELL_MAX_HEIGHT, CELL_RADIUS, MAX_CLOUDS_COUNT, TERRAIN_LEVELS, TERRAIN_GENERATION } from "../helpers/constants"
 import { SimplexNoise } from "three/examples/jsm/Addons.js"
@@ -41,10 +41,8 @@ export class Terrain extends Group {
     Object.keys(TERRAIN_LEVELS).forEach((levelKey) => {
       const level = levelKey as TTerrainLevel;
       const geometry = new CylinderGeometry(CELL_RADIUS, CELL_RADIUS, 1, 6);
-      const material = new MeshPhysicalMaterial({
+      const material = new MeshLambertMaterial({
         map: this.assets.textures.terrain[level],
-        envMap: this.assets.textures.envmap,
-        envMapIntensity: 0.135,
         flatShading: true,
       });
 
@@ -60,22 +58,14 @@ export class Terrain extends Group {
     const stoneGeometry = new Stone(new Vector3(0, 0, 0));
     const treeGeometry = new Tree(new Vector3(0, 0, 0));
 
-    const stoneMaterial = new MeshPhysicalMaterial({
-      color: 0x777777, // Серый цвет камня
-      roughness: 0.7, // Шероховатость для матового вида
-      metalness: 0.1, // Лёгкий металлический отблеск
-      flatShading: true, // Чёткие грани
-      envMap: this.assets.textures.envmap,
-      envMapIntensity: 0.135, // Слабое отражение окружения
+    const stoneMaterial = new MeshLambertMaterial({
+      color: 0x777777,
+      flatShading: true,
     })
 
-    const treeMaterial = new MeshPhysicalMaterial({
-      color: 0x2d5a27, // Тёмно-зелёный для листвы
-      roughness: 0.9, // Полностью матовый
-      metalness: 0.0, // Без металлического блеска
-      flatShading: false, // Плавные грани
-      envMap: this.assets.textures.envmap,
-      envMapIntensity: 0.135,
+    const treeMaterial = new MeshLambertMaterial({
+      color: 0x2d5a27,
+      flatShading: true,
     })
 
     this.decorationMeshes.stone = new InstancedMesh(stoneGeometry, stoneMaterial, 1000);
@@ -136,7 +126,7 @@ export class Terrain extends Group {
   private generateClouds() {
     const cloudsCount = Math.floor(Math.random() * MAX_CLOUDS_COUNT)
     for (let i = 0; i < cloudsCount; i++) {
-      const cloud = new Cloud(this.assets.textures.envmap);
+      const cloud = new Cloud();
       this.cloudsGroup.add(cloud)
     }
     this.add(this.cloudsGroup)
