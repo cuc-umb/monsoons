@@ -2,7 +2,7 @@ import type { TTerrainLevel } from "./types"
 
 export const CELL_RADIUS = 1
 export const CELL_MAX_HEIGHT = 10
-export const DEFAULT_TERRAIN_SIZE = 10
+export const WORLD_SIZE_UNIT_PX = 90 // world size unit related to pixels
 
 export const TERRAIN_LEVELS: Record<Exclude<TTerrainLevel, 'water'>, number> = {
   stone: CELL_MAX_HEIGHT * 0.8,

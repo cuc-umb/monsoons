@@ -29,7 +29,6 @@ export class RendererManager {
         }
         this.animateFunctions.forEach(fn => { fn.call(this) })
         this.renderer.render(sceneCtx, sceneCtx.camera)
-        // this.labelRenderer.render(this, this.camera)
         requestAnimationFrame(this.boundAnimate)
     }
 

@@ -33,7 +33,7 @@ export class Terrain extends Group {
     this.generateTerrainCells(size)
     this.generateClouds()
 
-    const seaMesh = new Water(waterTexture, envmap, TERRAIN_LEVELS.sand, 17)
+    const seaMesh = new Water(waterTexture, envmap, TERRAIN_LEVELS.sand, size * 8)
     this.add(seaMesh)
   }
 

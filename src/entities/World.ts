@@ -70,6 +70,20 @@ export class World extends Scene {
   public getRaycaster (): Raycaster {
     return this.inputManager.raycaster
   }
+
+  public getSize (): number {
+    // Calculate world size based on user screen resolution
+    // For example, base size on the minimum of width and height, scaled to a logical world unit
+    const baseSize = 10; // fallback or minimum size
+    if (typeof window === 'undefined') {
+      return baseSize;
+    }
+
+    const minDimension = Math.min(window.innerWidth, window.innerHeight);
+    const calculatedSize = Math.round(minDimension / WORLD_SIZE_UNIT_PX)
+    
+    return calculatedSize
+  }
   
   public async loadAssets(): Promise<TAssets> {
     try {
@@ -79,4 +93,3 @@ export class World extends Scene {
     }
   }
 }
-

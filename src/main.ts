@@ -1,7 +1,6 @@
 import { Terrain } from './entities/Terrain';
 import { World } from './entities/World'
 import WebGL from 'three/addons/capabilities/WebGL.js'
-import { DEFAULT_TERRAIN_SIZE } from './helpers/constants';
 import { Player } from './entities/Player';
 import { Monsoon } from './entities/Monsoon';
 
@@ -13,7 +12,8 @@ if (WebGL.isWebGL2Available()) {
     const assets = await world.loadAssets()
     
     // Create Terrain
-    const terrain = new Terrain(DEFAULT_TERRAIN_SIZE, assets)
+    const terrainSize = world.getSize()
+    const terrain = new Terrain(terrainSize, assets)
     world.add(terrain)
 
     const playerCell = terrain.getRandomCell()
