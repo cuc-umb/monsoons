@@ -25,8 +25,11 @@ export class Cloud extends Mesh {
 
         const material = new MeshLambertMaterial({
             flatShading: true,
+            transparent: true,
+            opacity: 0.8
         })
 
         super(geo, material)
+        this.raycast = () => {} // Prevents this mesh from being raycasted
     }
 }
