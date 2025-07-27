@@ -1,14 +1,19 @@
-import { ACESFilmicToneMapping, Object3D, PCFSoftShadowMap, PerspectiveCamera, WebGLRenderer } from "three"
+import { ACESFilmicToneMapping, PCFSoftShadowMap, PerspectiveCamera, Scene, WebGLRenderer } from "three"
 import { resizeRendererToDisplaySize } from "../helpers/utils"
+import { CSS2DRenderer } from "three/examples/jsm/Addons.js"
 
-type SceneWithCamera = Object3D & { camera: PerspectiveCamera }
+type SceneToRender = Scene & {
+    camera: PerspectiveCamera,
+    labelRenderer?: CSS2DRenderer
+}
 
 export class RendererManager {
     public renderer: WebGLRenderer
     private boundAnimate: () => void
     private animateFunctions: ((...args: unknown[]) => unknown)[] = []
+    private isDebug = !import.meta.env.PROD
     
-    constructor(animatedSceneCtx: SceneWithCamera) {
+    constructor(animatedSceneCtx: SceneToRender) {
         const canvas = document.getElementById('main-c') ?? undefined
         this.renderer = new WebGLRenderer({ antialias: true, canvas })
         this.renderer.toneMapping = ACESFilmicToneMapping
@@ -21,7 +26,7 @@ export class RendererManager {
     public animate() {
         this.boundAnimate()
     }
-    private animateSetup (this: RendererManager, sceneCtx: SceneWithCamera) {
+    private animateSetup (this: RendererManager, sceneCtx: SceneToRender) {
         if (resizeRendererToDisplaySize(this.renderer)) {
             const canvas = this.renderer.domElement
             sceneCtx.camera.aspect = canvas.clientWidth / canvas.clientHeight
@@ -29,6 +34,9 @@ export class RendererManager {
         }
         this.animateFunctions.forEach(fn => { fn.call(this) })
         this.renderer.render(sceneCtx, sceneCtx.camera)
+        if (this.isDebug) {
+            sceneCtx.labelRenderer?.render?.(sceneCtx, sceneCtx.camera)
+        }
         requestAnimationFrame(this.boundAnimate)
     }
 

@@ -12,7 +12,8 @@ import { InstancedMeshManager } from "../managers/InstancedMeshManager"
 import { Stone } from "./Stone"
 
 export class Terrain extends Group {
-  private debugger = new CellDebugger();
+  private isDebug = !import.meta.env.PROD;
+  private cellDebugger?: CellDebugger;
 
   private terrainCells: TerrainCell[] = []
   private assets: TAssets
@@ -22,6 +23,9 @@ export class Terrain extends Group {
 
   constructor(size: number, assets: TAssets) {
     super()
+    if (this.isDebug) {
+      this.cellDebugger = new CellDebugger()
+    }
 
     this.assets = assets
     const { terrain, envmap } = assets.textures
@@ -143,7 +147,7 @@ export class Terrain extends Group {
       new Vector3(1, cell.height, 1)
     );
 
-    this.debugger.addLabel(cell, mesh);
+    this.cellDebugger?.addLabel?.(cell, mesh);
   }
 
   addDecoration(decoration: TDecoration) {

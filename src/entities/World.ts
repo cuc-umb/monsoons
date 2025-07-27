@@ -17,15 +17,15 @@ import { INITIAL_WORLD_CAMERA_ANGLE, INITIAL_WORLD_CAMERA_POSITION, WORLD_SIZE_U
 import GUI from "three/examples/jsm/libs/lil-gui.module.min.js"
 import { CameraGUIController } from "../controllers/CameraGUIController"
 
-
 export class World extends Scene {
-  private labelRenderer: CSS2DRenderer
+  public labelRenderer?: CSS2DRenderer
   public camera: PerspectiveCamera
   private assetsService: AssetsService
-  private lightingManager: LightingManager 
-  private inputManager: InputManager 
-  private labelRendererManager: LabelRendererManager 
-  private rendererManager: RendererManager 
+  private lightingManager: LightingManager
+  private inputManager: InputManager
+  private labelRendererManager?: LabelRendererManager
+  private rendererManager: RendererManager
+  private isDebug: boolean = !import.meta.env.PROD
 
   constructor() {
     super()
@@ -33,9 +33,11 @@ export class World extends Scene {
 
     this.background = new Color('#FFEECC')
 
-    // Label Renderer setup
-    this.labelRendererManager = new LabelRendererManager();
-    this.labelRenderer = this.labelRendererManager.labelRenderer;
+    if (this.isDebug) {
+      // Label Renderer setup
+      this.labelRendererManager = new LabelRendererManager();
+      this.labelRenderer = this.labelRendererManager.labelRenderer;
+    }
 
     // Camera setup
     const fov = 45
@@ -45,11 +47,15 @@ export class World extends Scene {
     this.camera = new PerspectiveCamera(fov, aspect, near, far)
     this.camera.position.set(...Object.values(INITIAL_WORLD_CAMERA_POSITION) as [number, number, number])
     this.camera.rotation.set(...Object.values(INITIAL_WORLD_CAMERA_ANGLE) as [number, number, number])
-    new CameraGUIController(gui, this.camera, this.labelRenderer.domElement)
+    if (this.isDebug && this.labelRenderer) {
+      new CameraGUIController(gui, this.camera, this.labelRenderer.domElement)
+    }
 
     // Lighting setup
     this.lightingManager = new LightingManager(this);
-    new LightingGUIController(gui, this.lightingManager.sunlight, this.lightingManager.sunlightHelper);
+    if (this.isDebug) {
+      new LightingGUIController(gui, this.lightingManager.sunlight, this.lightingManager.sunlightHelper);
+    }
 
     // Input Manager setup
     this.inputManager = new InputManager();
